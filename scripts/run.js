@@ -7,12 +7,15 @@ const main = async () => {
     console.log("Contract deployed to:", waveContract.address);
     console.log("Contract deployed by:", owner.address);
 
-    await waveContract.getTotalWaves();
-
-    const waveTxn = await waveContract.wave();
-    await waveTxn.wait();
-
-    await waveContract.getTotalWaves();
+    const firstWaveTxn = await waveContract.wave(owner.address, "Overgrow", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png", 3);
+    await firstWaveTxn.wait();
+  
+    await waveContract.getWaveStatus();
+  
+    const secondWaveTxn = await waveContract.connect(randomPerson).wave(owner.address, "Blaze", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png", 6);
+    await secondWaveTxn.wait();
+  
+    await waveContract.getWaveStatus();
   };
   
   const runMain = async () => {
@@ -26,4 +29,4 @@ const main = async () => {
     // Read more about Node exit ('process.exit(num)') status codes here: https://stackoverflow.com/a/47163396/7974948
   };
   
-  runMain();Ru
+  runMain();
