@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 contract WavePortal {
     uint256 totalWaves;
     mapping(address => string) public pokemons;
+    mapping(address => string) public pokemonSprites;
     mapping(address => uint256) public pokemonIndex;
 
     constructor() {
@@ -21,6 +22,14 @@ contract WavePortal {
         pokemons[_address] = _pokemon;
     }
 
+    function getPokemonSprite(address _address) public view returns (string memory) {
+        return pokemonSprites[_address];
+    }
+
+    function setPokemonSprite(address _address, string memory _pokemonSprite) public {
+        pokemonSprites[_address] = _pokemonSprite;
+    }
+
     function getPokemonIndex(address _address) public view returns (uint256) {
         return pokemonIndex[_address];
     }
@@ -29,13 +38,18 @@ contract WavePortal {
         pokemonIndex[_address] = _index;
     }
 
-    function wave() public {
+    function wave(address _address, string memory _pokemon, string memory _pokemonSprite, uint256 _index) public {
         totalWaves += 1;
-        console.log("%s has waved!", msg.sender);
+        setPokemon(_address, _pokemon);
+        setPokemonSprite(_address, _pokemonSprite);
+        setPokemonIndex(_address, _index);
     }
 
-    function getTotalWaves() public view returns (uint256) {
-        console.log("We have %d total waves!", totalWaves);
+    function getWaveStatus() public view returns (uint256) {
+        console.log("%s has waved!", msg.sender);
+        console.log("Waver's favorite pokemon is %s", getPokemon(msg.sender));
+        console.log("Waver's pokemon sprite is %s", getPokemonSprite(msg.sender));
+        console.log("Pokemon ID: %d", getPokemonIndex(msg.sender));
         return totalWaves;
     }
 }
