@@ -1,18 +1,18 @@
 const main = async () => {
     const [owner, randomPerson] = await hre.ethers.getSigners();
-    const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
+    const waveContractFactory = await hre.ethers.getContractFactory("SmartPortal");
     const waveContract = await waveContractFactory.deploy();
     await waveContract.deployed();
 
     console.log("Contract deployed to:", waveContract.address);
     console.log("Contract deployed by:", owner.address);
 
-    const firstWaveTxn = await waveContract.wave(owner.address, "Overgrow", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png", 3);
+    const firstWaveTxn = await waveContract.wave(owner.address, "Deadpool", 1);
     await firstWaveTxn.wait();
   
     await waveContract.getWaveStatus();
   
-    const secondWaveTxn = await waveContract.connect(randomPerson).wave(owner.address, "Blaze", "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png", 6);
+    const secondWaveTxn = await waveContract.connect(randomPerson).wave(owner.address, "Batman", 4);
     await secondWaveTxn.wait();
   
     await waveContract.getWaveStatus();
