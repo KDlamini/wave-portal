@@ -5,40 +5,38 @@ pragma solidity ^0.8.17;
 import "hardhat/console.sol";
 
 contract SmartPortal {
-    uint256 totalWaves;
-    mapping(address => string) public characters;
-    mapping(address => uint256) public characterIndex;
+    uint256 waveCount;
+    event NewWave(address indexed from, string character, uint256 characterIndex, string message, uint256 timestamp);
+
+    struct Wave {
+        address waver; // The address of the user who waved.
+        string character; // The character the user chose.
+        uint256 characterIndex; // The index of the character on the front end api.
+        string message; // The message the user sent.
+        uint256 timestamp; // The timestamp when the user waved.
+    }
+
+    Wave[] waves;
 
     constructor() {
         console.log("Hi there! I am Simo. Say hi with your favorite pokemon!");
     }
 
-    function getCharacter(address _address) public view returns (string memory) {
-        return characters[_address];
+    function wave(string memory _character, uint256 _characterIndex, string memory _message) public {
+        waveCount += 1;
+        console.log("%s waved w/ message %s", msg.sender, _message);
+
+        waves.push(Wave(msg.sender, _character, _characterIndex, _message, block.timestamp));
+
+        emit NewWave(msg.sender, _character, _characterIndex, _message, block.timestamp);
     }
 
-    function setCharacter(address _address, string memory _character) public {
-        characters[_address] = _character;
-    }
-
-    function getCharacterIndex(address _address) public view returns (uint256) {
-        return characterIndex[_address];
-    }
-
-    function setCharacterIndex(address _address, uint256 _index) public {
-        characterIndex[_address] = _index;
-    }
-
-    function wave(address _address, string memory _character, uint256 _index) public {
-        totalWaves += 1;
-        setCharacter(_address, _character);
-        setCharacterIndex(_address, _index);
+    function getAllWaves() public view returns (Wave[] memory) {
+        return waves;
     }
 
     function getWaveStatus() public view returns (uint256) {
-        console.log("%s has waved!", msg.sender);
-        console.log("Waver's favorite superhero/villain is %s", getCharacter(msg.sender));
-        console.log("Character ID: %d", getCharacterIndex(msg.sender));
-        return totalWaves;
+        console.log("Current wave count: %d", waveCount);
+        return waveCount;
     }
 }

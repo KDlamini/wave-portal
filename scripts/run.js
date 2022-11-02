@@ -1,32 +1,34 @@
 const main = async () => {
-    const [owner, randomPerson] = await hre.ethers.getSigners();
-    const waveContractFactory = await hre.ethers.getContractFactory("SmartPortal");
-    const waveContract = await waveContractFactory.deploy();
-    await waveContract.deployed();
+  const waveContractFactory = await hre.ethers.getContractFactory("SmartPortal");
+  const waveContract = await waveContractFactory.deploy();
+  await waveContract.deployed();
+  console.log("Contract add:", waveContract.address);
 
-    console.log("Contract deployed to:", waveContract.address);
-    console.log("Contract deployed by:", owner.address);
+ 
+  let waveTxn = await waveContract.wave("Deadpool", 1, "A message!");
+  await waveTxn.wait(); // Wait for the transaction to be mined
 
-    const firstWaveTxn = await waveContract.wave(owner.address, "Deadpool", 1);
-    await firstWaveTxn.wait();
-  
-    await waveContract.getWaveStatus();
-  
-    const secondWaveTxn = await waveContract.connect(randomPerson).wave(owner.address, "Batman", 4);
-    await secondWaveTxn.wait();
-  
-    await waveContract.getWaveStatus();
-  };
-  
-  const runMain = async () => {
-    try {
-      await main();
-      process.exit(0); // exit Node process without error
-    } catch (error) {
-      console.log(error);
-      process.exit(1); // exit Node process while indicating 'Uncaught Fatal Exception' error
-    }
-    // Read more about Node exit ('process.exit(num)') status codes here: https://stackoverflow.com/a/47163396/7974948
-  };
-  
-  runMain();
+  await waveContract.getWaveStatus();
+
+  const [_, randomPerson] = await hre.ethers.getSigners(); // Connect new user 
+
+  waveTxn = await waveContract.connect(randomPerson).wave("Batman", 4, "Another message!");
+  await waveTxn.wait(); // Wait for the transaction to be mined
+
+  await waveContract.getWaveStatus();
+
+  let allWaves = await waveContract.getAllWaves();
+  console.log(allWaves);
+};
+
+const runMain = async () => {
+  try {
+    await main();
+    process.exit(0);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+runMain();
