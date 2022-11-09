@@ -18,8 +18,8 @@ contract SmartPortal {
 
     Wave[] waves;
 
-    constructor() {
-        console.log("Hi there! I am Simo. Say hi with your favorite pokemon!");
+    constructor() payable {
+        console.log("Hi there! I am Simo. Say hi with your favorite superhero!");
     }
 
     function wave(string memory _character, uint256 _characterIndex, string memory _message) public {
@@ -29,7 +29,15 @@ contract SmartPortal {
         waves.push(Wave(msg.sender, _character, _characterIndex, _message, block.timestamp));
 
         emit NewWave(msg.sender, _character, _characterIndex, _message, block.timestamp);
-    }
+
+        uint256 prizeAmount = 0.0001 ether;
+        require(
+            prizeAmount <= address(this).balance,
+            "Trying to withdraw more money than the contract has."
+        );
+        (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+        require(success, "Failed to withdraw money from contract.");
+        }
 
     function getAllWaves() public view returns (Wave[] memory) {
         return waves;
