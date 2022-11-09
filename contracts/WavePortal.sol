@@ -20,6 +20,8 @@ contract SmartPortal {
 
     Wave[] waves;
 
+    mapping(address => uint256) public lastWavedAt;
+
     constructor() payable {
         console.log("Hi there! I am Simo. Say hi with your favorite superhero!");
 
@@ -27,6 +29,16 @@ contract SmartPortal {
     }
 
     function wave(string memory _character, uint256 _characterIndex, string memory _message) public {
+        //Make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
+        require(
+            lastWavedAt[msg.sender] + 15 minutes < block.timestamp,
+            "Wait 15m"
+        );
+
+
+        // Update the current timestamp we have for the user
+        lastWavedAt[msg.sender] = block.timestamp;
+
         waveCount += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
 
