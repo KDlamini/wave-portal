@@ -18,11 +18,14 @@ const main = async () => {
   );
 
   /*
-   * Send Wave
+   * Send Waves
    */
-  let waveTxn = await waveContract.wave("Deadpool", 1, "A message!");
+  const waveTxn = await waveContract.wave("Deadpool", 3, "A message!");
   await waveTxn.wait();
 
+  const waveTxn2 = await waveContract.wave("Vision", 2, "A second message!");
+  await waveTxn2.wait();
+  
   /*
    * Get Contract balance to see what happened!
    */
